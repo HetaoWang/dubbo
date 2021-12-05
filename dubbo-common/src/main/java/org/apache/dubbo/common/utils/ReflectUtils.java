@@ -24,29 +24,11 @@ import javassist.NotFoundException;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
+import java.lang.reflect.*;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -262,35 +244,6 @@ public final class ReflectUtils {
             return c.getName() + sb.toString();
         }
         return c.getName();
-    }
-
-    public static Class<?> getGenericClass(Class<?> cls) {
-        return getGenericClass(cls, 0);
-    }
-
-    public static Class<?> getGenericClass(Class<?> cls, int i) {
-        try {
-            ParameterizedType parameterizedType = ((ParameterizedType) cls.getGenericInterfaces()[0]);
-            Object genericClass = parameterizedType.getActualTypeArguments()[i];
-
-            // handle nested generic type
-            if (genericClass instanceof ParameterizedType) {
-                return (Class<?>) ((ParameterizedType) genericClass).getRawType();
-            }
-
-            // handle array generic type
-            if (genericClass instanceof GenericArrayType) {
-                return (Class<?>) ((GenericArrayType) genericClass).getGenericComponentType();
-            }
-
-            // Requires JDK 7 or higher, Foo<int[]> is no longer GenericArrayType
-            if (((Class) genericClass).isArray()) {
-                return ((Class) genericClass).getComponentType();
-            }
-            return (Class<?>) genericClass;
-        } catch (Throwable e) {
-            throw new IllegalArgumentException(cls.getName() + " generic type undefined!", e);
-        }
     }
 
     /**
