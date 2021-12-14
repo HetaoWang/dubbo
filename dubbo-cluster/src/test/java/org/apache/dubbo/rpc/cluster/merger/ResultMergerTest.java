@@ -16,18 +16,15 @@
  */
 package org.apache.dubbo.rpc.cluster.merger;
 
+import org.apache.dubbo.rpc.cluster.Merger;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Member;
+import java.util.*;
 
 public class ResultMergerTest {
     private MergerFactory mergerFactory;
@@ -49,6 +46,12 @@ public class ResultMergerTest {
         } catch (IllegalArgumentException exception) {
             Assertions.assertEquals("returnType is null", exception.getMessage());
         }
+    }
+
+    @Test
+    public void testNoSuchMergerReturnNull() {
+        Merger<Member> merger = mergerFactory.getMerger(Member.class);
+        Assertions.assertNull(merger);
     }
 
     /**
@@ -265,7 +268,7 @@ public class ResultMergerTest {
     }
 
     /**
-     * LongArrayMerger test
+     * MapArrayMerger test
      */
     @Test
     public void testMapArrayMerger() {
