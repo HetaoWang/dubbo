@@ -76,7 +76,7 @@ public abstract class DynamicDirectory<T> extends AbstractDirectory<T> implement
     protected final Class<T> serviceType;
 
     /**
-     * Initialization at construction time, assertion not null, and always assign non null value
+     * Initialization at construction time, assertion not null, and always assign non-null value
      */
     protected final URL directoryUrl;
     protected final boolean multiGroup;
@@ -152,6 +152,11 @@ public abstract class DynamicDirectory<T> extends AbstractDirectory<T> implement
     @Override
     public void addServiceListener(ServiceInstancesChangedListener instanceListener) {
         this.serviceListener = instanceListener;
+    }
+
+    @Override
+    public ServiceInstancesChangedListener getServiceListener() {
+        return this.serviceListener;
     }
 
     public void setProtocol(Protocol protocol) {
@@ -303,7 +308,7 @@ public abstract class DynamicDirectory<T> extends AbstractDirectory<T> implement
 
         ExtensionLoader<AddressListener> addressListenerExtensionLoader = getUrl().getOrDefaultModuleModel().getExtensionLoader(AddressListener.class);
         List<AddressListener> supportedListeners = addressListenerExtensionLoader.getActivateExtension(getUrl(), (String[]) null);
-        if (supportedListeners != null && !supportedListeners.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(supportedListeners)) {
             for (AddressListener addressListener : supportedListeners) {
                 addressListener.destroy(getConsumerUrl(), this);
             }
